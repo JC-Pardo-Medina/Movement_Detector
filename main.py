@@ -17,7 +17,9 @@ def movement_detector(carpeta,carpetanueva):
     speed = float(speed_grid.get())
     time_that_has_to_pass = float(time_that_has_to_pass_grid.get())
     with open(f'{carpetanueva}/{file_title}.txt', 'w') as f:
-        for video in os.listdir(carpeta):
+        for i,video in enumerate(os.listdir(carpeta)):
+            displayedText.set(f"Analizando archivo {i+1} de {len(os.listdir(carpeta))}")
+            label.update_idletasks()
             f.write(f"{video}:\n")
             video = str(f"{carpeta}/{video}")
             firstFrame = None
@@ -104,17 +106,18 @@ brightness_grid_position = (3,0)
 brightness_grid_label_position = (2,0)
 contrast_grid_position = (5,0)
 contrast_grid_label_position = (4,0)
-speed_grid_position = (5,2)
-speed_grid_label_position = (4,2)
-button_videos_folder_position = (0,2)
-button_videos_folder_label_position = (1,2)
-button_txt_folder_position = (2,2)
-button_txt_folder_label_position = (3,2)
+speed_grid_position = (5,1)
+speed_grid_label_position = (4,1)
+button_videos_folder_position = (0,1)
+button_videos_folder_label_position = (1,1)
+button_txt_folder_position = (2,1)
+button_txt_folder_label_position = (3,1)
 min_area_grid_position = (7,0)
 min_area_grid_label_position = (6,0)
-time_that_has_to_pass_grid_position = (7,2)
-time_that_has_to_pass_grid_label_position = (6,2)
-main_button_position = (8,1)
+time_that_has_to_pass_grid_position = (7,1)
+time_that_has_to_pass_grid_label_position = (6,1)
+main_button_position = (8,0)
+label_position = (8,1)
 padx=5
 pady=5
 window = Tk()
@@ -161,5 +164,8 @@ time_that_has_to_pass_grid.insert(END,0)
 min_area_grid.insert(END,500)
 main_button = ttk.Button(text="Ejecutar",command=lambda: movement_detector(old_folder_path,new_folder_path))#centro
 main_button.grid(row=main_button_position[0],column=main_button_position[1],padx=padx,pady=pady)
+displayedText = StringVar()
+label = ttk.Label(textvariable=displayedText)
+label.grid(row=label_position[0],column=label_position[1],padx=padx,pady=pady)
 
 window.mainloop()
