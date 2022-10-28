@@ -9,7 +9,7 @@ from tkinter import filedialog
 from tkinter import messagebox
 
 
-def funcionresolucion(carpeta,carpetanueva):
+def movement_detector(carpeta,carpetanueva):
     file_title = file_title_grid.get()
     min_area = float(min_area_grid.get())
     contrast = float(contrast_grid.get())
@@ -25,7 +25,6 @@ def funcionresolucion(carpeta,carpetanueva):
                 f.write(f"El archivo no es un vídeo o no se puede abrir.\n\n")
                 continue
             fps = vs.get(cv2.CAP_PROP_FPS)
-            speed = fps * speed
             frames = 1
             while True:
                 frame = vs.read()
@@ -36,7 +35,7 @@ def funcionresolucion(carpeta,carpetanueva):
                 if firstFrame is None:
                     frames -= 1
                 frames += 1
-                if (frames-1) % speed == 0:
+                if (frames-1) % (fps * speed) == 0:
                     frame = imutils.resize(frame, width=500)
                     new_image = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
                     new_image[:,:,2] = np.clip(contrast * new_image[:,:,2] + brightness, 0, 255)
@@ -71,7 +70,6 @@ def funcionresolucion(carpeta,carpetanueva):
                         else:
                             f.write(f"Deja de haber actividad: {time}\n") 
                     owlWas = owlIs
-            print(frames)
             vs.release()
             f.write(f"Acaba el vídeo: {time}\n\n")
     messagebox.showinfo(message="El proceso ha finalizado con éxito.")
@@ -122,12 +120,12 @@ brightness_label = ttk.Label(text="Brillo")
 brightness_label.grid(row=brightness_grid_label_position[0],column=brightness_grid_label_position[1],padx=padx,pady=pady)
 brightness_grid.grid(row=brightness_grid_position[0],column=brightness_grid_position[1],padx=padx,pady=pady)
 brightness_grid.insert(END,50)
-old_folder_path = StringVar()
+old_folder_path = os.getcwd()
 button_videos_folder = ttk.Button(text="Seleccionar carpeta de los vídeos",command=browse_button)
 button_videos_folder_label = ttk.Label(text=old_folder_path)
 button_videos_folder_label.grid(row=button_videos_folder_label_position[0],column=button_videos_folder_label_position[1],padx=padx,pady=pady)
 button_videos_folder.grid(row=button_videos_folder_position[0],column=button_videos_folder_position[1],padx=padx,pady=pady)
-new_folder_path = StringVar()
+new_folder_path = os.getcwd()
 button_txt_folder = ttk.Button(text="Seleccionar carpeta donde guardar el txt",command=browse_button2)
 button_txt_folder_label = ttk.Label(text=new_folder_path)
 button_txt_folder_label.grid(row=button_txt_folder_label_position[0],column=button_txt_folder_label_position[1],padx=padx,pady=pady)
@@ -147,7 +145,7 @@ min_area_label = ttk.Label(text="Área mínima")
 min_area_label.grid(row=min_area_grid_label_position[0],column=min_area_grid_label_position[1],padx=padx,pady=pady)
 min_area_grid.grid(row=min_area_grid_position[0],column=min_area_grid_position[1],padx=padx,pady=pady)
 min_area_grid.insert(END,500)
-main_button = ttk.Button(text="Ejecutar",command=lambda: funcionresolucion(old_folder_path,new_folder_path))#centro
+main_button = ttk.Button(text="Ejecutar",command=lambda: movement_detector(old_folder_path,new_folder_path))#centro
 main_button.grid(row=main_button_position[0],column=main_button_position[1],padx=padx,pady=pady)
 
 window.mainloop()
